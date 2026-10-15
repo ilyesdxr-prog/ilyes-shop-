@@ -1,94 +1,61 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#111827">
-  <title>Ilyes Shop | متجرك الإلكتروني</title>
-  <meta name="description" content="اكتشف منتجاتنا واطلب بسهولة مع الدفع عند الاستلام في الجزائر.">
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f8fafc;
-      color: #111827;
-      line-height: 1.7;
-    }
-    header {
-      background: #111827;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    header h1 { margin: 0; font-size: 28px; }
-    header p { margin: 5px 0 0; color: #d1d5db; }
-    main {
-      width: min(100% - 32px, 900px);
-      margin: 28px auto;
-    }
-    .hero {
-      background: white;
-      padding: 28px 20px;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 4px 20px #00000008;
-    }
-    .hero h2 { font-size: 25px; margin: 0 0 10px; }
-    .hero p { color: #4b5563; }
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin-top: 20px;
-    }
-    .feature {
-      background: white;
-      padding: 16px;
-      border-radius: 12px;
-      text-align: center;
-    }
-    .notice {
-      margin-top: 20px;
-      background: #ecfdf5;
-      color: #065f46;
-      padding: 16px;
-      border-radius: 12px;
-      text-align: center;
-    }
-    footer {
-      text-align: center;
-      padding: 24px;
-      color: #6b7280;
-      font-size: 14px;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Ilyes Shop</h1>
-    <p>متجرك الإلكتروني في الجزائر</p>
-  </header>
+<label>العنوان بالتفصيل:</label>
+                <input type="text" id="address" required placeholder="الحي، الشارع، أو نقطة الدلالة">
+            </div>
+            <div class="form-group">
+                <label>الكمية:</label>
+                <select id="quantity">
+                    <option value="1">قطعة واحدة</option>
+                    <option value="2">قطعتان (- تخفيضพิเศษ)</option>
+                </select>
+            </div>
 
-  <main>
-    <section class="hero">
-      <h2>مرحبًا بك في متجرنا</h2>
-      <p>اكتشف منتجات عملية تناسب احتياجاتك، وتسوق بسهولة من هاتفك.</p>
-    </section>
+            <button type="submit" id="submitBtn">تأكيد الطلب الآن</button>
+        </form>
 
-    <section class="features">
-      <div class="feature">📦 منتجات متنوعة</div>
-      <div class="feature">💵 الدفع عند الاستلام</div>
-      <div class="feature">🚚 التوصيل حسب التغطية المتاحة</div>
-    </section>
-
-    <div class="notice">
-      متجرنا قيد التجهيز. سنضيف المنتجات ونموذج الطلب في الخطوات القادمة.
+        <div id="successAlert" class="alert alert-success">تم تسجيل طلبك بنجاح! سنتصل بك قريباً لتأكيد الشحن.</div>
     </div>
-  </main>
 
-  <footer>
-    © 2026 Ilyes Shop
-  </footer>
+    <footer>
+        جميع الحقوق محفوطة © 2026 - Ilyes Shop
+    </footer>
+
+    <script>
+        // ضع هنا رابط Web App الذي نسخته من Google Apps Script
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwm3UJJ5_SO9cC5QXuE8n9FdhOuWQ5EWf8lI5IfZUbJRmTce4hJpusHTz9rTnlJWMkp/exec";
+
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "جاري الإرسال...";
+            btn.disabled = true;
+
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                wilaya: document.getElementById('wilaya').value,
+                commune: document.getElementById('commune').value,
+                address: document.getElementById('address').value,
+                product: "ساعة ذكية أصلية",
+                quantity: document.getElementById('quantity').value
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            }).then(() => {
+                document.getElementById('orderForm').reset();
+                document.getElementById('successAlert').style.display = 'block';
+                btn.innerText = "تأكيد الطلب الآن";
+                btn.disabled = false;
+            }).catch(error => {
+                alert("حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.");
+                btn.innerText = "تأكيد الطلب الآن";
+                btn.disabled = false;
+            });
+        });
+    </script>
 </body>
 </html>
