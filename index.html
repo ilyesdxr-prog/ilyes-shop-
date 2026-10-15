@@ -1,60 +1,60 @@
-<label>العنوان بالتفصيل:</label>
-                <input type="text" id="address" required placeholder="الحي، الشارع، أو نقطة الدلالة">
+<option value="سطيف">19 - سطيف</option>
+                        <option value="أخرى">ولاية أخرى</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">العنوان بالتفصيل (الحي، الشارع)</label>
+                    <input type="text" id="address" required placeholder="مثال: حي بن عكنون، شارع الاستقلال" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg transition duration-200 text-lg">
+                    تأكيد الطلب الآن 🚀
+                </button>
+            </form>
+
+            <!-- رسالة النجاح المخفية -->
+            <div id="successMessage" class="hidden mt-4 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-center font-semibold">
+                🎉 تم تسجيل طلبك بنجاح! سنتصل بك قريباً لتأكيد الشحن.
             </div>
-            <div class="form-group">
-                <label>الكمية:</label>
-                <select id="quantity">
-                    <option value="1">قطعة واحدة</option>
-                    <option value="2">قطعتان (- تخفيضพิเศษ)</option>
-                </select>
-            </div>
+        </div>
+    </main>
 
-            <button type="submit" id="submitBtn">تأكيد الطلب الآن</button>
-        </form>
-
-        <div id="successAlert" class="alert alert-success">تم تسجيل طلبك بنجاح! سنتصل بك قريباً لتأكيد الشحن.</div>
-    </div>
-
-    <footer>
-        جميع الحقوق محفوطة © 2026 - Ilyes Shop
+    <!-- الفوتر -->
+    <footer class="text-center py-6 text-xs text-gray-500">
+        Ilyes Shop - جميع الحقوق محفوظة © 2026
     </footer>
 
+    <!-- سكربت الربط مع Google Sheets -->
     <script>
-        // ضع هنا رابط Web App الذي نسخته من Google Apps Script
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwm3UJJ5_SO9cC5QXuE8n9FdhOuWQ5EWf8lI5IfZUbJRmTce4hJpusHTz9rTnlJWMkp/exec";
+        const scriptURL = "https://script.google.com/macros/s/AKfycbwm3UJJ5_SO9cC5QXuE8n9FdhOuWQ5EWf8lI5IfZUbJRmTce4hJpusHTz9rTnlJWMkp/exec";
+        const form = document.getElementById('orderForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
 
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
+        form.addEventListener('submit', e => {
             e.preventDefault();
-            
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "جاري الإرسال...";
-            btn.disabled = true;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري إرسال طلبك...';
 
-            const formData = {
-                name: document.getElementById('name').value,
+            let requestBody = {
+                fullName: document.getElementById('fullName').value,
                 phone: document.getElementById('phone').value,
-                wilaya: document.getElementById('wilaya').value,
-                commune: document.getElementById('commune').value,
-                address: document.getElementById('address').value,
-                product: "ساعة ذكية أصلية",
-                quantity: document.getElementById('quantity').value
+                state: document.getElementById('state').value,
+                address: document.getElementById('address').value
             };
 
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            }).then(() => {
-                document.getElementById('orderForm').reset();
-                document.getElementById('successAlert').style.display = 'block';
-                btn.innerText = "تأكيد الطلب الآن";
-                btn.disabled = false;
-            }).catch(error => {
-                alert("حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.");
-                btn.innerText = "تأكيد الطلب الآن";
-                btn.disabled = false;
-            });
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify(requestBody) })
+                .then(response => {
+                    form.reset();
+                    submitBtn.classList.add('hidden');
+                    successMessage.classList.remove('hidden');
+                })
+                .catch(error => {
+                    alert('حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'تأكيد الطلب الآن 🚀';
+                });
         });
     </script>
 </body>
